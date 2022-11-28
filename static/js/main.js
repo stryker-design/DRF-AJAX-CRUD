@@ -14,6 +14,7 @@
 		-- Remove extra data on re-render
 		-- CSRF Token */
 
+// Get the CSRF token
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== "") {
@@ -29,37 +30,65 @@ function getCookie(name) {
   }
   return cookieValue;
 }
-
 const csrftoken = getCookie("csrftoken");
 
-
-fetch(url, {
-  method: "POST",
-  headers: {
-    "X-Requested-With": "XMLHttpRequest",
-    "X-CSRFToken": getCookie("csrftoken"),
-  },
-});
-
+// Call build table function
 buildTable();
 
 function buildTable() {
   const tableWrapper = document.getElementById("table-wrapper");
-  let url = "http://127.0.0.1:8000/api/task-list/"
+  tableWrapper.innerHTML = "";
+  const url = "http://127.0.0.1:8000/api/task-list/";
 
   fetch(url)
-  .then((resp) => resp.json())
-  .then(function(data){
-    console.log('Data', data)
+    .then((resp) => resp.json())
+    .then(function (data) {
+      console.log("Data", data);
 
-    const table = data
-    for (var i in data){
-        try{
-            document.getElementById('data-row-${i}').remove()
-        }
-        catch(err){
+      const list = data;
+      for (var i in data) {
+        // try{
+        //     document.getElementById('data-row-${i}').remove()
+        // }
+        // catch(err){
 
-        }
-    }
-  })
+        // }
+
+        let item = `
+        <div id="data-row-${i}">
+        
+            <td class="whitespace-nowrap px-3 py-4 border-b">
+                ${list[i].task}
+            </td>
+            <td class="border-b px-3 py-4 text-sm text-gray-500">
+                <button href="#" class="text-indigo-600 bg-red py-2 px-4 border rounded border-black hover:text-indigo-900 edit-btn w-fit ">Edit</button>
+            </td>
+            <td class="flex border-b justify-start  py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                <button type="submit" class=" border border-black py-2 px-4 rounded text-indigo-600 hover:text-indigo-900 delete-btn">Delete</button>
+            </td> 
+        </div>
+        `;
+
+        tableWrapper.innerHTML += item;
+      }
+    });
 }
+
+const form = document.getElementById("form-wrapper");
+
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
+  const url = "http://127.0.0.1:8000/api/task-create/";
+  const task = document.getElementById("task").value;
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+      "X-CSRFToken": csrftoken,
+    },
+    body: JSON.stringify({ task: task }),
+  }).then(function (response) {
+    buildTable();
+    document.getElementById("form").reset();
+  });
+});

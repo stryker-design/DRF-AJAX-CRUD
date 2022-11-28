@@ -1,44 +1,48 @@
 {% extends 'base/base.html' %} {% block content %}
-<div class="px-4 sm:px-6 lg:px-8">
-    <div class="sm:flex sm:items-end">
-      <div class="sm:flex-auto">
-        <h1 class="text-xl font-semibold text-gray-900 py-2">Task</h1>
-        <input id="task-name" name="task-name" class="h-8 pl-2 w-2/5 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Email Jenna to schedule meeting">
+<body class="flex items-center justify-center h-screen w-screen">
+    <div class="px-4 sm:px-6 lg:px-8 w-6/12 bg-white rounded-xl shadow border border-gray-200">
+        <div class="">
+            
+            <div id="form-wrapper" class="mt-4 sm:mt-0  sm:flex-none">
+                <h1 class="text-xl font-semibold text-gray-900 pt-10 pb-2">My to do list</h1>
+                <form id="form" method="POST" class="flex justify-center pt-2">
+                    {% csrf_token %}
+                    <div class="sm:flex-auto">
+                        <input id="task" name="task" class="h-10 pl-2 w-5/6 rounded-md border border-b-0 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Add task">
+                    </div>
+                    <div class="">
+                        <button type="submit" class="flex justify-center py-2 px-4 rounded border border-black">Add task</button>
+                    </div>
+                </form>
+            </div>
         </div>
-      <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-        <form method="POST">
-            {% csrf_token %}
-            <button id="submit" type="button" class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">Add task</button>
-        </form>
-      </div>
-    </div>
-    <div class="mt-8 flex flex-col">
-      <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-          <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-            <table class="min-w-full divide-y divide-gray-300">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Task type</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Task</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Edit</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Delete</th>
-                </tr>
-              </thead>
-              <tbody class="bg-white">
-                <!-- Odd row -->
-                <tr id="table-wrapper">
-                  
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="mt-8 flex flex-col">
+            <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="inline-block min-w-full pt-2 pb-10 align-middle md:px-6 lg:px-8">
+                    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-300 6">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm w-64 font-semibold text-gray-900 sm:pl-6">Task</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm w-40 font-semibold text-gray-900">Edit</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm w-24 font-semibold text-gray-900">Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-wrapper" class="bg-white">
+                                
+                            
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  
-  {% endblock%}
+    
+</body>
+    {% endblock%}
 </div>
 
 
