@@ -15,6 +15,7 @@ function getCookie(name) {
   return cookieValue;
 }
 const csrftoken = getCookie("csrftoken");
+var activeItem = null;
 
 // Call build table function
 buildTable();
@@ -61,20 +62,22 @@ function buildTable() {
         // var task = document.getElementsByClassName("task")[i];
 
         editBtn.addEventListener(
-          "click", (function(item) {
-            return function() {
-              editItem(item)
-            }
-          })(list[i]));
+          "click",
+          (function (item) {
+            return function () {
+              editItem(item);
+            };
+          })(list[i])
+        );
 
-        // deleteBtn.addEventListener(
-        //   "click",
-        //   (function (item) {
-        //     return function () {
-        //       deleteItem(item);
-        //     };
-        //   })(list[i])
-        // );
+        deleteBtn.addEventListener(
+          "click",
+          (function (item) {
+            return function () {
+              deleteItem(item);
+            };
+          })(list[i])
+        );
 
         // task.addEventListener(
         //   "click",
@@ -92,24 +95,52 @@ const form = document.getElementById("form-wrapper");
 
 form.addEventListener("submit", function (e) {
   e.preventDefault();
-  const url = "http://127.0.0.1:8000/api/task-create/";
+  // Using var instead of let because let is limited to the scope.
+  // var declares globally or locally to an entire function regardless of scope
+  var url = "http://127.0.0.1:8000/api/task-create/";
   let task = document.getElementById("task").value;
+
+  /* Check to see if item is null
+     if item is not null change url to update and pass in the active item id
+     and let the view handle the rest
+  */
+  if (activeItem != null) {
+    var url = `http://127.0.0.1:8000/api/task-update/${activeItem.id}`;
+    // activeItem = null;
+  }
   fetch(url, {
     method: "POST",
     headers: {
       "Content-type": "application/json",
       "X-CSRFToken": csrftoken,
     },
-    body: JSON.stringify({'task': task }),
+    body: JSON.stringify({ task: task }),
   }).then(function (response) {
     buildTable();
     document.getElementById("form").reset();
   });
 });
 
+function editItem(item) {
+  console.log("Item clicked:", item);
+  activeItem = item;
+  document.getElementById("task").value = activeItem.task;
+}
 
-function editItem(item){
-  console.log('Item clicked:', item)
-  activeItem = item
-  document.getElementById('task').value = activeItem.task
+function deleteItem(item) {
+  console.log("delete");
+
+  fetch(`http://127.0.0.1:8000/api/task-delete/${item.id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-type": "application/json",
+      "X-CSRFToken": csrftoken,
+    },
+  }).then((response) => {
+    buildTable();
+  });
+}
+
+function strikeUnstrike(item) {
+  
 }
