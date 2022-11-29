@@ -1,19 +1,3 @@
-/* KEY COMPONENTS:
-		"activeItem" = null until an edit button is clicked. Will contain object of item we are editing
-		"list_snapshot" = Will contain previous state of list. Used for removing extra rows on list update
-			
-		PROCESS:
-		1 - Fetch Data and build rows "buildList()"
-		2 - Create Item on form submit
-		3 - Edit Item click - Prefill form and change submit URL
-		4 - Delete Item - Send item id to delete URL
-		5 - Cross out completed task - Event handle updated item
-		NOTES:
-		-- Add event handlers to "edit", "delete", "title"
-		-- Render with strike through items completed
-		-- Remove extra data on re-render
-		-- CSRF Token */
-
 // Get the CSRF token
 function getCookie(name) {
   let cookieValue = null;
@@ -34,7 +18,6 @@ const csrftoken = getCookie("csrftoken");
 
 // Call build table function
 buildTable();
-
 function buildTable() {
   const tableWrapper = document.getElementById("table-wrapper");
   tableWrapper.innerHTML = "";
@@ -45,7 +28,7 @@ function buildTable() {
     .then(function (data) {
       console.log("Data", data);
 
-      const list = data;
+      let list = data;
       for (var i in data) {
         // try{
         //     document.getElementById('data-row-${i}').remove()
@@ -71,6 +54,37 @@ function buildTable() {
 
         tableWrapper.innerHTML += item;
       }
+
+      for (var i in list) {
+        var editBtn = document.getElementsByClassName("edit-btn")[i];
+        var deleteBtn = document.getElementsByClassName("delete-btn")[i];
+        // var task = document.getElementsByClassName("task")[i];
+
+        editBtn.addEventListener(
+          "click", (function(item) {
+            return function() {
+              editItem(item)
+            }
+          })(list[i]));
+
+        // deleteBtn.addEventListener(
+        //   "click",
+        //   (function (item) {
+        //     return function () {
+        //       deleteItem(item);
+        //     };
+        //   })(list[i])
+        // );
+
+        // task.addEventListener(
+        //   "click",
+        //   (function (item) {
+        //     return function () {
+        //       strikeUnstrike(item);
+        //     };
+        //   })(list[i])
+        // );
+      }
     });
 }
 
@@ -79,16 +93,23 @@ const form = document.getElementById("form-wrapper");
 form.addEventListener("submit", function (e) {
   e.preventDefault();
   const url = "http://127.0.0.1:8000/api/task-create/";
-  const task = document.getElementById("task").value;
+  let task = document.getElementById("task").value;
   fetch(url, {
     method: "POST",
     headers: {
       "Content-type": "application/json",
       "X-CSRFToken": csrftoken,
     },
-    body: JSON.stringify({ task: task }),
+    body: JSON.stringify({'task': task }),
   }).then(function (response) {
     buildTable();
     document.getElementById("form").reset();
   });
 });
+
+
+function editItem(item){
+  console.log('Item clicked:', item)
+  activeItem = item
+  document.getElementById('task').value = activeItem.task
+}
