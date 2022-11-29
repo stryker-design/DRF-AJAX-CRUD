@@ -30,18 +30,13 @@ function buildTable() {
       console.log("Data", data);
 
       let list = data;
-      for (var i in data) {
-        // try{
-        //     document.getElementById('data-row-${i}').remove()
-        // }
-        // catch(err){
+      for (var i in list) {
+    
 
-        // }
-
-        let item = `
+        var item = `
         <div id="data-row-${i}">
         
-            <td class="whitespace-nowrap px-3 py-4 border-b">
+            <td class="whitespace-nowrap px-3 py-4 border-b task">
                 ${list[i].task}
             </td>
             <td class="border-b px-3 py-4 text-sm text-gray-500">
@@ -59,7 +54,7 @@ function buildTable() {
       for (var i in list) {
         var editBtn = document.getElementsByClassName("edit-btn")[i];
         var deleteBtn = document.getElementsByClassName("delete-btn")[i];
-        // var task = document.getElementsByClassName("task")[i];
+        
 
         editBtn.addEventListener(
           "click",
@@ -78,15 +73,6 @@ function buildTable() {
             };
           })(list[i])
         );
-
-        // task.addEventListener(
-        //   "click",
-        //   (function (item) {
-        //     return function () {
-        //       strikeUnstrike(item);
-        //     };
-        //   })(list[i])
-        // );
       }
     });
 }
@@ -106,7 +92,7 @@ form.addEventListener("submit", function (e) {
   */
   if (activeItem != null) {
     var url = `http://127.0.0.1:8000/api/task-update/${activeItem.id}`;
-    // activeItem = null;
+    activeItem = null;
   }
   fetch(url, {
     method: "POST",
@@ -129,8 +115,9 @@ function editItem(item) {
 
 function deleteItem(item) {
   console.log("delete");
+  var url = `http://127.0.0.1:8000/api/task-delete/${item.id}`;
 
-  fetch(`http://127.0.0.1:8000/api/task-delete/${item.id}`, {
+  fetch(url, {
     method: "DELETE",
     headers: {
       "Content-type": "application/json",
@@ -141,6 +128,3 @@ function deleteItem(item) {
   });
 }
 
-function strikeUnstrike(item) {
-  
-}
