@@ -1,0 +1,1 @@
+web: gunicorn drfcrud.wsgi --log-file -
